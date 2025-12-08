@@ -16,10 +16,17 @@
   "packageManager": "pnpm@10.24.0",
   "dependencies": {
     "@chat/common": "workspace:^",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "hpp": "^0.2.3"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6"
+    "@types/compression": "^1.8.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/hpp": "^0.2.7"
   }
 }

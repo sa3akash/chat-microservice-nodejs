@@ -17,7 +17,6 @@ const main = async () => {
 
     const shutdown = () => {
       logger.info('Shutting down auth service...');
-
       //   closeDatabase(), closePublisher()
       Promise.all([])
         .catch((error: unknown) => {
