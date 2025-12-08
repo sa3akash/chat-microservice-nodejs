@@ -16,17 +16,22 @@
   "packageManager": "pnpm@10.24.0",
   "dependencies": {
     "@chat/common": "workspace:^",
+    "bcryptjs": "^3.0.3",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "helmet": "^8.1.0",
-    "hpp": "^0.2.3"
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.15.3",
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/hpp": "^0.2.7"
+    "@types/hpp": "^0.2.7",
+    "@types/jsonwebtoken": "^9.0.10"
   }
 }

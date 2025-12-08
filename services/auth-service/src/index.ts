@@ -1,11 +1,15 @@
 import http from 'node:http';
 
-import { env } from '@/config';
+import { closeDatabase, connectToDatabase, env } from '@/config';
 import { createApp } from '@/app';
 import { logger } from '@/utils/Logger';
+import { initModels } from '@/models';
 
 const main = async () => {
   try {
+    await connectToDatabase();
+    await initModels();
+
     const app = createApp();
 
     const server = http.createServer(app);
@@ -17,8 +21,8 @@ const main = async () => {
 
     const shutdown = () => {
       logger.info('Shutting down auth service...');
-      //   closeDatabase(), closePublisher()
-      Promise.all([])
+      // closePublisher()
+      Promise.all([closeDatabase()])
         .catch((error: unknown) => {
           logger.error({ error }, 'Error during shutdown tasks');
         })

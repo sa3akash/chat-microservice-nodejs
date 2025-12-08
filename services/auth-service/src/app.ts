@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet, { type HelmetOptions } from 'helmet';
 import compression from 'compression';
 import hpp from 'hpp';
+import authRouter from '@/routes';
 
 export const createApp = (): Application => {
   const app = express();
@@ -24,6 +25,8 @@ export const createApp = (): Application => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(hpp());
+
+  app.use('/auth', authRouter);
 
   app.use(() => {
     throw new NotFoundError('Route not found');
