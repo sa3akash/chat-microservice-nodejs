@@ -11,7 +11,5 @@
     }
   },
   "include": ["src"],
-  "references": [
-    { "path": "../../packages/common" }
-  ]
+  "references": [{ "path": "../../packages/common" }]
 }

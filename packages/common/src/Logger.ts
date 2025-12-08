@@ -15,8 +15,8 @@ export const createLogger = (options: CreateLoggerOptions): Logger => {
           target: "pino-pretty",
           options: {
             colorize: true,
-            // ignore: 'pid,hostname',
-            translateTime: "SYS:dd-mm-yyyy HH:MM:ss",
+            ignore: "pid,hostname",
+            translateTime: "SYS:standard",
           },
         }
       : undefined;
