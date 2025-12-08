@@ -6,10 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json --resolve-full-paths",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit --project tsconfig.json",
-    "format": "prettier . --write"
+    "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "keywords": [],
   "author": "",

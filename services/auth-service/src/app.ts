@@ -1,5 +1,5 @@
-import { globalErrorHandler } from "@chat/common";
-import express, { type Application } from "express";
+import { globalErrorHandler } from '@chat/common';
+import express, { type Application } from 'express';
 
 export const createApp = (): Application => {
   const app = express();

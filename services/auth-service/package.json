@@ -8,10 +8,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json --resolve-full-paths",
     "dev": "tsx watch src/index.ts",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit --project tsconfig.json",
-    "format": "prettier . --write"
+    "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "keywords": [],
   "author": "",
