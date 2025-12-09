@@ -6,11 +6,9 @@ const ACCESS_TOKEN: Secret = env.JWT_SECRET;
 const REFRESH_TOKEN: Secret = env.JWT_REFRESH_SECRET;
 const ACCESS_OPTIONS: SignOptions = {
   expiresIn: env.JWT_EXPIRES_IN as SignOptions['expiresIn'],
-  algorithm: 'RS256',
 };
 const REFRESH_OPTIONS: SignOptions = {
   expiresIn: env.JWT_REFRESH_EXPIRES_IN as SignOptions['expiresIn'],
-  algorithm: 'RS256',
 };
 
 export const hashPassword = async (password: string): Promise<string> => {
@@ -41,7 +39,5 @@ export const signRefreshToken = (payload: RefreshTokenPayload): string => {
 };
 
 export const verifyRefreshToken = (payload: string): RefreshTokenPayload => {
-  return jwt.verify(payload, REFRESH_TOKEN, {
-    algorithms: ['RS256'],
-  }) as RefreshTokenPayload;
+  return jwt.verify(payload, REFRESH_TOKEN) as RefreshTokenPayload;
 };

@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "private": true,
   "scripts": {
-    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json --resolve-full-paths",
+    "remove": "rm -rf dist",
+    "build": "pnpm run remove && tsc --project tsconfig.json && tsc-alias -p tsconfig.json --resolve-full-paths",
     "dev": "tsx watch src/index.ts",
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
