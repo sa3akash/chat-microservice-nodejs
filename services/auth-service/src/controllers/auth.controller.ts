@@ -1,7 +1,12 @@
 import { AuthService } from '@/services/auth.services';
 import { ip } from '@/utils/ip';
-import { LoginInput, loginSchema, RegisterInput, registerSchema } from '@/utils/zod';
-import { Validate } from '@chat/common';
+import {
+  type LoginInput,
+  loginSchema,
+  type RegisterInput,
+  registerSchema,
+  Validate,
+} from '@chat/common';
 import { Request, Response } from 'express';
 
 const authService = new AuthService();

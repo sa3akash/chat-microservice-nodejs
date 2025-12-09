@@ -1,4 +1,11 @@
-import { globalErrorHandler, helmetConfig, NotFoundError } from '@chat/common';
+import { env } from '@/config';
+import {
+  BadGatewayError,
+  globalErrorHandler,
+  helmetConfig,
+  internalAuth,
+  NotFoundError,
+} from '@chat/common';
 import express, { type Application } from 'express';
 import cors from 'cors';
 import helmet, { type HelmetOptions } from 'helmet';
@@ -12,11 +19,14 @@ export const createApp = (): Application => {
   app.use(
     cors({
       origin(requestOrigin, callback) {
+        if (requestOrigin && requestOrigin !== env.GATEWAY_SERVICE_URL) {
+          throw new BadGatewayError('Not allowed by cors');
+        }
         callback(null, true);
       },
       credentials: true,
       methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-      // allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Internal-Token'],
     }),
   );
 
@@ -25,6 +35,21 @@ export const createApp = (): Application => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(hpp());
+
+  app.use(
+    internalAuth(env.INTERNAL_API_TOKEN, {
+      exemptPaths: ['/health', '/metrics'],
+    }),
+  );
+
+  app.get('/health', (_req, res) => {
+    res.json({
+      status: 'ok',
+      service: 'Auth Service',
+      environment: env.NODE_ENV,
+      timestamp: new Date().toISOString(),
+    });
+  });
 
   app.use('/auth', authRouter);
 

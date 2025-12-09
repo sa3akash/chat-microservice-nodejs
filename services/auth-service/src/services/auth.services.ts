@@ -1,11 +1,11 @@
 import { sequelize } from '@/config';
 import { RefreshToken, UserCredentials } from '@/models';
-import type { AuthResponse } from '@/types/auth.interface';
+import type { AuthResponse } from '@chat/common';
 import { hashPassword, signAccessToken, signRefreshToken, verifyPassword } from '@/utils/token';
 import { BadRequestError, ConflictError } from '@chat/common';
 import { Op, type Transaction } from 'sequelize';
 import crypto from 'crypto';
-import type { LoginInput, RegisterInput } from '@/utils/zod';
+import type { LoginInput, RegisterInput } from '@chat/common';
 
 export class AuthService {
   private REFRESH_TOKEN_TTL_DAYS = 30;
@@ -66,7 +66,7 @@ export class AuthService {
     };
   }
 
-  async login(input: LoginInput, ipAddress: string, userAgent: string) {
+  async login(input: LoginInput, ipAddress: string, userAgent: string): Promise<AuthResponse> {
     const user = await UserCredentials.findOne({
       where: {
         email: { [Op.eq]: input.email },
