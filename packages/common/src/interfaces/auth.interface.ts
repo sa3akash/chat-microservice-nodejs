@@ -13,3 +13,16 @@ export interface AuthTokens {
 export interface AuthResponse extends AuthTokens {
   user: UserData;
 }
+
+export interface UserInterface {
+  id: string;
+  email: string;
+  displayName: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateUserInput {
+  email: string;
+  displayName: string;
+}
