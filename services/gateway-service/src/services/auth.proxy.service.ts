@@ -42,4 +42,34 @@ export class AuthProxyService {
     });
     return response.data;
   }
+
+  async logout(token: string): Promise<{ message: string }> {
+    const response = await client.post<{ message: string }>('/auth/logout', { token }, authHeader);
+    return response.data;
+  }
+
+  async refreshToken(token: string, ipAddress: string, userAgent: string): Promise<AuthResponse> {
+    const response = await client.post<AuthResponse>(
+      '/auth/refresh-token',
+      { refreshToken: token },
+      {
+        headers: {
+          'User-Agent': userAgent,
+          'X-Forwarded-For': ipAddress,
+          ip: ipAddress,
+          ...authHeader.headers,
+        },
+      },
+    );
+    return response.data;
+  }
+
+  async removeRefreshToken(token: string): Promise<{ message: string }> {
+    const response = await client.post<{ message: string }>(
+      '/auth/remove-refresh-token',
+      { token },
+      authHeader,
+    );
+    return response.data;
+  }
 }

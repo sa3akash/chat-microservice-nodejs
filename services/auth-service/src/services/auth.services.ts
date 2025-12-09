@@ -1,12 +1,19 @@
 import { sequelize } from '@/config';
 import { RefreshToken, UserCredentials } from '@/models';
 import type { AuthResponse } from '@chat/common';
-import { hashPassword, signAccessToken, signRefreshToken, verifyPassword } from '@/utils/token';
-import { BadRequestError, ConflictError } from '@chat/common';
+import {
+  hashPassword,
+  signAccessToken,
+  signRefreshToken,
+  verifyPassword,
+  verifyRefreshToken,
+} from '@/utils/token';
+import { BadRequestError, ConflictError, NotFoundError } from '@chat/common';
 import { Op, type Transaction } from 'sequelize';
 import crypto from 'crypto';
 import type { LoginInput, RegisterInput } from '@chat/common';
 import { publishUserRegistered } from '@/queues/event-publishing';
+import { logger } from '@/utils/Logger';
 
 export class AuthService {
   private REFRESH_TOKEN_TTL_DAYS = 30;
@@ -111,9 +118,53 @@ export class AuthService {
     };
   }
 
-  logout() {}
+  public async logout(token: string) {
+    const payload = verifyRefreshToken(token);
+    await this.revokeRefreshToken(payload.sub, payload.tokenId);
+  }
 
-  refreshTokens() {}
+  public async refreshTokens(
+    token: string,
+    ipAddress: string,
+    userAgent: string,
+  ): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  }> {
+    const payload = verifyRefreshToken(token);
+
+    const tokenRecord = await RefreshToken.findOne({
+      where: { tokenId: payload.tokenId, userId: payload.sub },
+    });
+
+    if (!tokenRecord) {
+      throw new NotFoundError('Invalid refresh token');
+    }
+
+    if (tokenRecord.expiresAt.getTime() < Date.now()) {
+      await tokenRecord.destroy();
+      throw new BadRequestError('Refresh token has expired');
+    }
+
+    const credential = await UserCredentials.findByPk(payload.sub);
+
+    if (!credential) {
+      logger.warn({ userId: payload.sub }, 'User missing for refresh token');
+      throw new BadRequestError('Invalid refresh token');
+    }
+
+    await tokenRecord.destroy();
+    const newTokenRecord = await this.createRefreshToken({
+      ipAddress,
+      userAgent,
+      userId: credential.id,
+    });
+
+    return {
+      accessToken: signAccessToken({ sub: credential.id, email: credential.email }),
+      refreshToken: signRefreshToken({ sub: credential.id, tokenId: newTokenRecord.tokenId }),
+    };
+  }
 
   private async revokeRefreshToken(userId: string, tokenId: string) {
     await RefreshToken.destroy({ where: { userId, tokenId } });
