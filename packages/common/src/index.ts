@@ -5,6 +5,7 @@ export * from './decorators';
 export * from './middlewares';
 export * from './validations';
 export * from './interfaces';
+export * from './events';
 export { z } from 'zod';
 export * from 'error-express';
 export type { Logger } from 'pino';

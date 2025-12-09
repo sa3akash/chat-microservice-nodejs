@@ -6,6 +6,7 @@ import { BadRequestError, ConflictError } from '@chat/common';
 import { Op, type Transaction } from 'sequelize';
 import crypto from 'crypto';
 import type { LoginInput, RegisterInput } from '@chat/common';
+import { publishUserRegistered } from '@/queues/event-publishing';
 
 export class AuthService {
   private REFRESH_TOKEN_TTL_DAYS = 30;
@@ -54,15 +55,19 @@ export class AuthService {
       tokenId: refreshTokenRecord.dataValues.tokenId,
     });
 
+    const userData = {
+      id: user.dataValues.id,
+      email: user.dataValues.email,
+      displayName: user.dataValues.displayName,
+      createdAt: user.dataValues.createdAt.toString(),
+    };
+
+    publishUserRegistered(userData);
+
     return {
       accessToken,
       refreshToken,
-      user: {
-        id: user.dataValues.id,
-        email: user.dataValues.email,
-        displayName: user.dataValues.displayName,
-        createdAt: user.dataValues.createdAt,
-      },
+      user: userData,
     };
   }
 

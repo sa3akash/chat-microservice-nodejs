@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { env } from '@/config';
-import type { AuthResponse, RegisterInput } from '@chat/common';
+import type { AuthResponse, LoginInput, RegisterInput } from '@chat/common';
 
 const client = axios.create({
   baseURL: env.AUTH_SERVICE_URL,
@@ -21,6 +21,18 @@ export class AuthProxyService {
     userAgent: string,
   ): Promise<AuthResponse> {
     const response = await client.post<AuthResponse>('/auth/register', input, {
+      headers: {
+        'User-Agent': userAgent,
+        'X-Forwarded-For': ipAddress,
+        ip: ipAddress,
+        ...authHeader.headers,
+      },
+    });
+    return response.data;
+  }
+
+  async login(input: LoginInput, ipAddress: string, userAgent: string): Promise<AuthResponse> {
+    const response = await client.post<AuthResponse>('/auth/login', input, {
       headers: {
         'User-Agent': userAgent,
         'X-Forwarded-For': ipAddress,

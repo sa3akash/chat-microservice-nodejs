@@ -4,5 +4,6 @@ import { Router } from 'express';
 const authRouter: Router = Router();
 
 authRouter.post('/register', AuthController.prototype.register);
+authRouter.post('/login', AuthController.prototype.login);
 
 export { authRouter };

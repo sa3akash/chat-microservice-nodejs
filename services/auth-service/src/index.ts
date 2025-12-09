@@ -4,11 +4,13 @@ import { closeDatabase, connectToDatabase, env } from '@/config';
 import { createApp } from '@/app';
 import { logger } from '@/utils/Logger';
 import { initModels } from '@/models';
+import { closePublisher, initPublisher } from '@/queues/event-publishing';
 
 const main = async () => {
   try {
     await connectToDatabase();
     await initModels();
+    await initPublisher();
 
     const app = createApp();
 
@@ -22,7 +24,7 @@ const main = async () => {
     const shutdown = () => {
       logger.info('Shutting down auth service...');
       // closePublisher()
-      Promise.all([closeDatabase()])
+      Promise.all([closeDatabase(), closePublisher()])
         .catch((error: unknown) => {
           logger.error({ error }, 'Error during shutdown tasks');
         })

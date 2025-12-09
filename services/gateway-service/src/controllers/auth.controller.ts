@@ -1,6 +1,6 @@
 import { AuthProxyService } from '@/services/auth.proxy.service';
 import { ip } from '@/utils/ip';
-import { registerSchema, Validate } from '@chat/common';
+import { loginSchema, registerSchema, Validate } from '@chat/common';
 import type { Request, Response } from 'express';
 
 const authProxyService = new AuthProxyService();
@@ -21,5 +21,18 @@ export class AuthController {
     );
 
     res.status(201).json(response);
+  }
+
+  @Validate({
+    body: loginSchema,
+  })
+  public async login(req: Request, res: Response) {
+    const { email, password } = req.body;
+    const userAgent = req.headers['user-agent'] as string;
+    const ipAddress = ip(req);
+
+    const response = await authProxyService.login({ email, password }, ipAddress, userAgent);
+
+    res.status(200).json(response);
   }
 }

@@ -10,7 +10,7 @@ const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string().min(3),
   JWT_REFRESH_EXPIRES_IN: z.string().default('30d'),
   GATEWAY_SERVICE_URL: z.url(),
-  //   RABBITMQ_URL: z.string(),
+  RABBITMQ_URL: z.url(),
   INTERNAL_API_TOKEN: z.string().min(3),
 });
 

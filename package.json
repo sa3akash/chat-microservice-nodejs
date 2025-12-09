@@ -11,12 +11,14 @@
     "typecheck": "pnpm -r --workspace-root=false run typecheck",
     "fix": "pnpm run typecheck && pnpm run lint && pnpm run format",
     "test": "pnpm -r --workspace-root=false run test",
+    "key": "openssl rand -hex 32",
     "prepare": "husky"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "packageManager": "pnpm@10.25.0",
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",

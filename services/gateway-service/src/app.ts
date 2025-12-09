@@ -8,7 +8,6 @@ import compression from 'compression';
 import hpp from 'hpp';
 import gatewayRouter from './routes';
 import { AxiosError } from 'axios';
-import { logger } from '@/utils/Logger';
 
 export const createApp = (): Application => {
   const app = express();
@@ -44,9 +43,8 @@ export const createApp = (): Application => {
   app.use(() => {
     throw new NotFoundError('Route not found');
   });
-  app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
-    logger.error(error);
 
+  app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
     if (error instanceof AxiosError) {
       return res.status(error.response?.data.statusCode).json({
         message: error.response?.data.message,
