@@ -1,0 +1,34 @@
+{
+  "name": "@chat/gateway-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "remove": "rm -rf dist",
+    "build": "pnpm run remove && tsc --project tsconfig.json && tsc-alias -p tsconfig.json --resolve-full-paths",
+    "dev": "tsx watch src/index.ts",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.24.0",
+  "dependencies": {
+    "@chat/common": "workspace:^",
+    "axios": "^1.13.2",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/hpp": "^0.2.7"
+  }
+}
