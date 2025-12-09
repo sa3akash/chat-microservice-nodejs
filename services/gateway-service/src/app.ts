@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { env } from '@/config';
-import { handleError, helmetConfig, NotFoundError, ServerError } from '@chat/common';
-import express, { type NextFunction, type Request, type Response, type Application } from 'express';
+import { helmetConfig, NotFoundError } from '@chat/common';
+import express, { type Application } from 'express';
 import cors from 'cors';
 import helmet, { type HelmetOptions } from 'helmet';
 import compression from 'compression';
 import hpp from 'hpp';
 import gatewayRouter from './routes';
-import { AxiosError } from 'axios';
+import { customErrorHandler } from '@/middlewares/error.handler';
 
 export const createApp = (): Application => {
   const app = express();
@@ -44,23 +43,7 @@ export const createApp = (): Application => {
     throw new NotFoundError('Route not found');
   });
 
-  app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
-    if (error instanceof AxiosError) {
-      return res.status(error.response?.data.statusCode).json({
-        message: error.response?.data.message,
-        code: error.response?.data.code,
-        statusCode: error.response?.data.statusCode,
-      });
-    }
+  app.use(customErrorHandler);
 
-    const err = handleError(error);
-
-    res.status(err.statusCode).json({
-      message: error.message ?? err.message,
-      code: err.code,
-      statusCode: err.statusCode,
-      ...(env.NODE_ENV === 'development' && { stack: error.stack }),
-    });
-  });
   return app;
 };

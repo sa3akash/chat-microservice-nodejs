@@ -36,8 +36,6 @@ const handleMessage = async (message: ConsumeMessage, ch: Channel) => {
   const raw = message.content.toString('utf-8');
   const event = JSON.parse(raw) as AuthRegisteredEvent;
 
-  logger.info({ event }, 'Auth event consume');
-
   await userService.syncFromAuthUser(event.payload);
 
   ch.ack(message);
@@ -80,7 +78,6 @@ export const startAuthEventConsumer = async () => {
     logger.warn('Auth consumer connection closed');
     connectionRef = null;
     channel = null;
-    consumerTag = null;
     consumerTag = null;
   });
 

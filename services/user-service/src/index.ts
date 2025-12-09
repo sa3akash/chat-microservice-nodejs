@@ -1,15 +1,17 @@
 import http from 'node:http';
 
-import { closeDatabase, env } from '@/config';
-import { createApp } from '@/app';
+import { closeDatabase, initializeDatabase, env } from '@/config';
 import { logger } from '@/utils/Logger';
-import { initializeDatabase } from '@/config';
+import { createApp } from '@/app';
 import { closeMessaging, initMessaging } from '@/queues/event-publisher';
+import { startAuthEventConsumer, stopAuthEventConsume } from '@/queues/auth-consumer';
 
 const main = async () => {
   try {
     await initializeDatabase();
     await initMessaging();
+    await startAuthEventConsumer();
+
     const app = createApp();
 
     const server = http.createServer(app);
@@ -21,7 +23,7 @@ const main = async () => {
 
     const shutdown = () => {
       logger.info('Shutting down user service...');
-      Promise.all([closeDatabase(), closeMessaging()])
+      Promise.all([closeDatabase(), closeMessaging(), stopAuthEventConsume()])
         .catch((error: unknown) => {
           logger.error({ error }, 'Error during shutdown tasks');
         })
