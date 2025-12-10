@@ -1,0 +1,39 @@
+{
+  "name": "@chat/chat-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf dist && tsc --project tsconfig.json && tsc-alias -p tsconfig.json --resolve-full-paths",
+    "dev": "tsx watch src/index.ts",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.25.0",
+  "dependencies": {
+    "@chat/common": "workspace:^",
+    "amqplib": "^0.10.9",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "hpp": "^0.2.3",
+    "ioredis": "^5.8.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.0.1",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.8",
+    "@types/compression": "^1.8.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/hpp": "^0.2.7",
+    "@types/jsonwebtoken": "^9.0.10"
+  }
+}
