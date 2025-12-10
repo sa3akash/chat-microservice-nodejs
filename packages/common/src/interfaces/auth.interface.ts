@@ -26,3 +26,10 @@ export interface CreateUserInput {
   email: string;
   displayName: string;
 }
+
+export interface AuthenticatedUser {
+  id: string;
+  email?: string;
+}
+
+export const USER_ID_HEADER = 'x-user-id';

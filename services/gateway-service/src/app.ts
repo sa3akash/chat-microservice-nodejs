@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import { env } from '@/config';
-import { helmetConfig, NotFoundError } from '@chat/common';
+import { type AuthenticatedUser, helmetConfig, NotFoundError } from '@chat/common';
 import express, { type Application } from 'express';
 import cors from 'cors';
 import helmet, { type HelmetOptions } from 'helmet';
@@ -8,6 +9,14 @@ import hpp from 'hpp';
 import gatewayRouter from '@/routes';
 import { customErrorHandler } from '@/middlewares/error.handler';
 import { docsInit } from '@/docs';
+
+declare global {
+  namespace Express {
+    interface Request {
+      user: AuthenticatedUser;
+    }
+  }
+}
 
 export const createApp = (): Application => {
   const app = express();
