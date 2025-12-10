@@ -1,0 +1,107 @@
+{
+  "schemas": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "example": "123e4567-e89b-12d3-a456-426614174000"
+        },
+        "email": { "type": "string", "format": "email", "example": "user@example.com" },
+        "displayName": { "type": "string", "example": "John Doe" },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-01-01T00:00:00.000Z"
+        }
+      },
+      "required": ["id", "email", "displayName", "createdAt"]
+    },
+    "AuthTokens": {
+      "type": "object",
+      "properties": {
+        "accessToken": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
+        "refreshToken": { "type": "string", "example": "dGhpc2lzYXJlZnJlc2h0b2tlbg..." }
+      },
+      "required": ["accessToken", "refreshToken"]
+    },
+    "AuthResponse": {
+      "allOf": [
+        { "$ref": "#/components/schemas/AuthTokens" },
+        {
+          "type": "object",
+          "properties": {
+            "user": { "$ref": "#/components/schemas/User" }
+          },
+          "required": ["user"]
+        }
+      ]
+    },
+    "RegisterRequest": {
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email", "example": "newuser@example.com" },
+        "password": { "type": "string", "minLength": 8, "example": "password123" },
+        "displayName": { "type": "string", "minLength": 3, "example": "New User" }
+      },
+      "required": ["email", "password", "displayName"]
+    },
+    "LoginRequest": {
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email", "example": "user@example.com" },
+        "password": { "type": "string", "minLength": 8, "example": "password123" }
+      },
+      "required": ["email", "password"]
+    },
+    "RefreshTokenRequest": {
+      "type": "object",
+      "properties": {
+        "refreshToken": { "type": "string", "example": "dGhpc2lzYXJlZnJlc2h0b2tlbg..." }
+      },
+      "required": ["refreshToken"]
+    },
+    "RevokeTokenRequest": {
+      "type": "object",
+      "properties": {
+        "token": { "type": "string", "example": "dGhpc2lzYXJlZnJlc2h0b2tlbg..." }
+      },
+      "required": ["token"]
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "message": { "type": "string", "example": "Internal Server Error" },
+        "statusCode": { "type": "integer", "example": 500 },
+        "status": { "type": "string", "example": "error" }
+      },
+      "required": ["message", "statusCode", "status"]
+    },
+    "BadRequestError": {
+      "type": "object",
+      "properties": {
+        "message": { "type": "string", "example": "Bad Request error" },
+        "statusCode": { "type": "integer", "example": 400 },
+        "status": { "type": "string", "example": "error" }
+      },
+      "required": ["message", "statusCode", "status"]
+    },
+    "ConflictError": {
+      "type": "object",
+      "properties": {
+        "message": { "type": "string", "example": "Email already exists" },
+        "statusCode": { "type": "integer", "example": 409 },
+        "status": { "type": "string", "example": "error" }
+      },
+      "required": ["message", "statusCode", "status"]
+    }
+  },
+  "securitySchemes": {
+    "bearerAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"
+    }
+  }
+}

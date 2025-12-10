@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { env } from '@/config';
 import { handleError } from '@chat/common';
 import { AxiosError } from 'axios';
 import type { NextFunction, Request, Response } from 'express';
@@ -31,6 +30,5 @@ export const customErrorHandler = (
     message: error.message ?? err.message,
     code: err.code,
     statusCode: err.statusCode,
-    ...(env.NODE_ENV === 'development' && { stack: error.stack }),
   });
 };
