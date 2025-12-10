@@ -30,7 +30,7 @@ export class UsersController {
     const { query, limit, exclude } = req.query as unknown as SearchUsersQuery;
     const user = req?.user;
 
-    const sanitizedExclude = Array.from(new Set([...exclude, user.id]));
+    const sanitizedExclude = Array.from(new Set([...(exclude ?? []), user.id]));
 
     const response = await userProxyService.searchUsers({
       query,

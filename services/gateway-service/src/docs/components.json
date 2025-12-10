@@ -18,6 +18,37 @@
       },
       "required": ["id", "email", "displayName", "createdAt"]
     },
+    "UserResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "example": "123e4567-e89b-12d3-a456-426614174000"
+        },
+        "email": { "type": "string", "format": "email", "example": "user@example.com" },
+        "displayName": { "type": "string", "example": "John Doe" },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-01-01T00:00:00.000Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-01-01T00:00:00.000Z"
+        }
+      },
+      "required": ["id", "email", "displayName", "createdAt", "updatedAt"]
+    },
+    "CreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email", "example": "newuser@example.com" },
+        "displayName": { "type": "string", "minLength": 3, "maxLength": 255, "example": "New User" }
+      },
+      "required": ["email", "displayName"]
+    },
     "AuthTokens": {
       "type": "object",
       "properties": {
