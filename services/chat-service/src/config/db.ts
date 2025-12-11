@@ -21,13 +21,11 @@ export const connectDb = async () => {
 
     connection.connection.on('error', (error) => {
       logger.error({ error }, 'MongoDB connection error');
-      // Decide if you want to exit or attempt reconnect
       process.exit(1);
     });
 
     connection.connection.on('disconnected', async () => {
       logger.info('MongoDB disconnected');
-      // Optional automatic reconnect
       try {
         await connectOnce();
       } catch (err) {
@@ -39,7 +37,6 @@ export const connectDb = async () => {
       logger.info('MongoDB reconnected');
     });
   } catch (err) {
-    // If initial connect fails, decide how to proceed (exit or retry)
     logger.error({ error: err }, 'Could not connect to MongoDB');
     throw err;
   }

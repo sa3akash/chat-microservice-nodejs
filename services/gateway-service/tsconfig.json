@@ -6,8 +6,9 @@
     "declaration": true,
     "declarationMap": true,
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
-
     "baseUrl": ".",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "paths": {
       "@/*": ["src/*"]
     },

@@ -23,9 +23,10 @@ export const docsInit = (app: Application) => {
     '/docs',
     apiReference({
       theme: 'purple',
-      spec: {
-        content: swaggerDocument,
-      },
+      // spec: {
+      //   content: swaggerDocument,
+      // },
+      content: swaggerDocument,
     }),
   );
 

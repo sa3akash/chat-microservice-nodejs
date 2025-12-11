@@ -3,10 +3,11 @@ import http from 'node:http';
 import { env, connectDb, disconnectDb, connectRedis, closeRedis } from '@/config';
 import { createApp } from '@/app';
 import { logger } from '@/utils/Logger';
+import { startConsumers, stopConsumers } from '@/queues/rabbitmq.consume';
 
 const main = async () => {
   try {
-    await Promise.all([connectDb(), connectRedis()]);
+    await Promise.all([connectDb(), connectRedis(), startConsumers()]);
     const app = createApp();
 
     const server = http.createServer(app);
@@ -18,7 +19,7 @@ const main = async () => {
 
     const shutdown = () => {
       logger.info('Shutting down chat service...');
-      Promise.all([disconnectDb(), closeRedis()])
+      Promise.all([disconnectDb(), closeRedis(), stopConsumers()])
         .catch((error: unknown) => {
           logger.error({ error }, 'Error during shutdown tasks');
         })
