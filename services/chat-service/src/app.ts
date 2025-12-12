@@ -13,6 +13,7 @@ import cors from 'cors';
 import helmet, { type HelmetOptions } from 'helmet';
 import compression from 'compression';
 import hpp from 'hpp';
+import chatRouter from '@/routes';
 
 declare global {
   namespace Express {
@@ -60,7 +61,7 @@ export const createApp = (): Application => {
     });
   });
 
-  // app.use('/auth', authRouter);
+  app.use('/chat', chatRouter);
 
   app.use(() => {
     throw new NotFoundError('Route not found');

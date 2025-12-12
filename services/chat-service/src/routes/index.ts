@@ -1,12 +1,12 @@
-// import { AuthController } from '@/controllers/auth.controller';
-// import express, { type Router } from 'express';
+import { ConversationController } from '@/controllers/conversation.controller';
+import express, { type Router } from 'express';
 
-// const authRouter: Router = express.Router();
+const chatRouter: Router = express.Router();
 
-// authRouter.post('/register', AuthController.prototype.register);
-// authRouter.post('/login', AuthController.prototype.login);
-// authRouter.post('/logout', AuthController.prototype.logout);
-// authRouter.post('/refresh-token', AuthController.prototype.refreshToken);
-// authRouter.post('/remove-refresh-token', AuthController.prototype.removeRefreshToken);
+chatRouter.post('/create-conversation', ConversationController.prototype.createConversation);
+chatRouter.get('/list-conversations', ConversationController.prototype.listConversations);
+chatRouter.get('/get-conversation/:id', ConversationController.prototype.getConversationById);
+chatRouter.post('/create-message', ConversationController.prototype.createMessage);
+chatRouter.get('/list-messages', ConversationController.prototype.listMessages);
 
-// export default authRouter;
+export default chatRouter;
