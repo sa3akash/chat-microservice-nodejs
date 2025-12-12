@@ -14,8 +14,7 @@
     "baseUrl": ".",
     "sourceMap": true,
     "outDir": "dist",
-    "removeComments": true,
-    "types": ["node"]
+    "removeComments": true
   },
   "exclude": ["node_modules", "dist"]
 }

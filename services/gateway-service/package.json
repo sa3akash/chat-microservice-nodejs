@@ -17,6 +17,7 @@
   "dependencies": {
     "@chat/common": "workspace:^",
     "@scalar/express-api-reference": "^0.8.28",
+    "@types/bun": "^1.3.4",
     "axios": "^1.13.2",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
@@ -31,7 +32,6 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/hpp": "^0.2.7",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^24.10.1"
+    "@types/jsonwebtoken": "^9.0.10"
   }
 }
