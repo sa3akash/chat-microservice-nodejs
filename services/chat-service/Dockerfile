@@ -1,74 +1,58 @@
+# ---------------- BASE IMAGE ----------------
 FROM node:22-alpine AS base
 
-# Install pnpm
+# Enable pnpm
 RUN corepack enable && corepack prepare pnpm@10.25.0 --activate
 
 WORKDIR /app
 
-FROM base AS deps
+# ---------------- DEPENDENCIES & BUILD ----------------
+FROM base AS builder
 
-# Copy workspace configs
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+# Copy root manifests and workspace packages manifests
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY tsconfig.base.json tsconfig.json ./
 
-# Copy package/json file for all needed packages
 COPY packages/common/package.json ./packages/common/
 COPY services/chat-service/package.json ./services/chat-service/
 
-#Install Dependencies
+# Install all dependencies (including dev for build)
 RUN pnpm install --frozen-lockfile
-
-
-FROM deps AS builder
 
 # Copy source code
 COPY packages/common ./packages/common
 COPY services/chat-service ./services/chat-service
 
-#Build commong packge first
-RUN pnpm --filter @chatapp/common build
-
-#Build auth-service
+# Build only needed packages
+RUN pnpm --filter @chat/common build
 RUN pnpm --filter chat-service build
 
+# ---------------- PRODUCTION ----------------
+FROM node:22-alpine AS production
 
-FROM node:22-alpine AS prodcution
-
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@10.14.0 --activate
-
-# Create non-root user 
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nodeuser
-
+ENV NODE_ENV=production \
+    CHAT_SERVICE_PORT=4002
 WORKDIR /app
 
-# Copy workspace configuration
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
-COPY tsconfig.base.json ./
+# Copy root manifests
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Copy package.json files
+# Copy workspace manifests
 COPY packages/common/package.json ./packages/common/
 COPY services/chat-service/package.json ./services/chat-service/
 
+# Install only production deps
+RUN corepack enable && corepack prepare pnpm@10.25.0 --activate \
+    && pnpm install --prod --frozen-lockfile
 
-# Install production dependencies only
-RUN pnpm install --frozen-lockfile --prod
-
-# Copy built artifcats from builder
+# Copy built files from builder
 COPY --from=builder /app/packages/common/dist ./packages/common/dist
 COPY --from=builder /app/services/chat-service/dist ./services/chat-service/dist
 
-# Change ownership to non(root)
-RUN chown -R nodeuser:nodejs /app
-
-USER nodeuser
-
-ENV NODE_ENV=production
-ENV CHAT_SERVICE_PORT=4002
-
-EXPOSE 4002
+# Switch to non-root user
+USER node
 
 WORKDIR /app/services/chat-service
+EXPOSE 4002
 
-CMD [ "node", "dist/index.js" ]
+CMD ["node", "dist/index.js"]

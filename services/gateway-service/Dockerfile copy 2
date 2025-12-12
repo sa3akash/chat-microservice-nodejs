@@ -1,0 +1,63 @@
+# ---------------- BASE IMAGE ----------------
+FROM node:22-alpine AS base
+
+RUN corepack enable && corepack prepare pnpm@10.25.0 --activate
+WORKDIR /app
+
+# ---------------- DEPENDENCIES & BUILD ----------------
+FROM base AS deps-builder
+
+# Copy configs
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json tsconfig.json ./
+
+# Copy package.json files for workspace members
+COPY packages/common/package.json ./packages/common/
+COPY services/gateway-service/package.json ./services/gateway-service/
+
+# Install ALL dependencies (including devDependencies for building)
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY packages/common ./packages/common
+COPY services/gateway-service ./services/gateway-service
+
+# Build packages
+RUN pnpm --filter @chat/common build && pnpm --filter gateway-service build
+
+
+FROM base AS prod
+# Copy configs
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json tsconfig.json ./
+
+COPY packages/common/package.json ./packages/common/
+COPY services/gateway-service/package.json ./services/gateway-service/
+
+# Install ALL dependencies (excluding devDependencies for production)
+RUN pnpm install --prod
+
+# ---------------- PRODUCTION ----------------
+FROM node:22-alpine AS production
+
+ENV NODE_ENV=production
+WORKDIR /app
+
+# 1. First, copy root config
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# Copy package.json files for workspace members
+COPY packages/common/package.json ./packages/common/
+COPY services/gateway-service/package.json ./services/gateway-service/
+
+COPY --from=prod /app/node_modules ./node_modules
+COPY --from=prod /app/packages/common/node_modules ./packages/common/node_modules
+COPY --from=prod /app/services/gateway-service/node_modules ./services/gateway-service/node_modules
+
+COPY --from=deps-builder /app/packages/common/dist ./packages/common/dist
+COPY --from=deps-builder /app/services/gateway-service/dist ./services/gateway-service/dist
+
+USER node
+WORKDIR /app/services/gateway-service
+EXPOSE 4000
+
+CMD ["node", "dist/index.js"]
