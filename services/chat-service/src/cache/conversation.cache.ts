@@ -7,8 +7,8 @@ const CACHE_TTL_SECONDS = 60;
 const serialize = (conversation: Conversation): string => {
   return JSON.stringify({
     ...conversation,
-    createdAt: conversation.createdAt,
-    updatedAt: conversation.updatedAt,
+    createdAt: (conversation.createdAt as Date).toISOString(),
+    updatedAt: (conversation.updatedAt as Date).toISOString(),
   });
 };
 

@@ -126,6 +126,87 @@
         "status": { "type": "string", "example": "error" }
       },
       "required": ["message", "statusCode", "status"]
+    },
+    "Conversation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "example": "123e4567-e89b-12d3-a456-426614174000"
+        },
+        "title": { "type": "string", "example": "Project Discussion" },
+        "creatorId": {
+          "type": "string",
+          "format": "uuid",
+          "example": "123e4567-e89b-12d3-a456-426614174000"
+        },
+        "participantIds": {
+          "type": "array",
+          "items": { "type": "string", "format": "uuid" },
+          "example": [
+            "123e4567-e89b-12d3-a456-426614174000",
+            "987fcdeb-51a2-43d1-9567-890123456789"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-01-01T00:00:00.000Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-01-01T00:00:00.000Z"
+        }
+      },
+      "required": ["id", "creatorId", "participantIds", "createdAt", "updatedAt"]
+    },
+    "Message": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "example": "123e4567-e89b-12d3-a456-426614174000"
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "example": "123e4567-e89b-12d3-a456-426614174000"
+        },
+        "senderId": {
+          "type": "string",
+          "format": "uuid",
+          "example": "123e4567-e89b-12d3-a456-426614174000"
+        },
+        "body": { "type": "string", "example": "Hello, how are you?" },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-01-01T00:00:00.000Z"
+        }
+      },
+      "required": ["id", "conversationId", "senderId", "body", "createdAt"]
+    },
+    "CreateConversationRequest": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200, "example": "Project Discussion" },
+        "participantIds": {
+          "type": "array",
+          "items": { "type": "string", "format": "uuid" },
+          "minItems": 1
+        }
+      },
+      "required": ["participantIds"]
+    },
+    "CreateMessageRequest": {
+      "type": "object",
+      "properties": {
+        "body": { "type": "string", "minLength": 1, "maxLength": 2000, "example": "Hello, world!" }
+      },
+      "required": ["body"]
     }
   },
   "securitySchemes": {

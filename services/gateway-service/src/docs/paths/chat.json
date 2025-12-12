@@ -1,0 +1,211 @@
+{
+  "/chat/conversation": {
+    "post": {
+      "summary": "Create a new conversation",
+      "description": "Creates a new conversation with participants.",
+      "tags": ["Chat"],
+      "security": [{ "bearerAuth": [] }],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/CreateConversationRequest" }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "Conversation created successfully",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/Conversation" } }
+          }
+        },
+        "400": {
+          "description": "Validation error",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/BadRequestError" } }
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+          }
+        }
+      }
+    }
+  },
+  "/chat/conversation/{id}": {
+    "get": {
+      "summary": "Get conversation by ID",
+      "description": "Retrieve a specific conversation by its ID.",
+      "tags": ["Chat"],
+      "security": [{ "bearerAuth": [] }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Conversation ID",
+          "required": true,
+          "schema": { "type": "string", "format": "uuid" }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Conversation details",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/Conversation" } }
+          }
+        },
+        "404": {
+          "description": "Conversation not found",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+          }
+        }
+      }
+    }
+  },
+  "/chat/conversations": {
+    "get": {
+      "summary": "List conversations",
+      "description": "Retrieve a list of conversations for the user.",
+      "tags": ["Chat"],
+      "security": [{ "bearerAuth": [] }],
+      "parameters": [
+        {
+          "name": "participantId",
+          "in": "query",
+          "description": "Filter by participant ID",
+          "required": false,
+          "schema": { "type": "string", "format": "uuid" }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "List of conversations",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/Conversation" }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+          }
+        }
+      }
+    }
+  },
+  "/chat/message/{id}": {
+    "post": {
+      "summary": "Create a new message",
+      "description": "Sends a message to a conversation.",
+      "tags": ["Chat"],
+      "security": [{ "bearerAuth": [] }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Conversation ID (Note: Route param acts as Conversation ID)",
+          "required": true,
+          "schema": { "type": "string", "format": "uuid" }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/CreateMessageRequest" }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "Message created successfully",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/Message" } }
+          }
+        },
+        "400": {
+          "description": "Validation error",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/BadRequestError" } }
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+          }
+        }
+      }
+    }
+  },
+  "/chat/messages/{id}": {
+    "get": {
+      "summary": "List messages",
+      "description": "Retrieve messages from a conversation.",
+      "tags": ["Chat"],
+      "security": [{ "bearerAuth": [] }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Conversation ID",
+          "required": true,
+          "schema": { "type": "string", "format": "uuid" }
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "description": "Number of messages to return",
+          "required": false,
+          "schema": { "type": "integer", "minimum": 1, "maximum": 200 }
+        },
+        {
+          "name": "after",
+          "in": "query",
+          "description": "Message ID to start after (pagination)",
+          "required": false,
+          "schema": { "type": "string" }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "List of messages",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/Message" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+          }
+        }
+      }
+    }
+  }
+}

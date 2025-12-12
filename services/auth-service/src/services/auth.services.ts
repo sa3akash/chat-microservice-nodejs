@@ -55,10 +55,10 @@ export class AuthService {
 
     await transaction.commit();
 
-    const accessToken = signAccessToken({ sub: user.dataValues.id, email: user.dataValues.email });
+    const accessToken = signAccessToken({ id: user.dataValues.id, email: user.dataValues.email });
 
     const refreshToken = signRefreshToken({
-      sub: user.dataValues.id,
+      id: user.dataValues.id,
       tokenId: refreshTokenRecord.dataValues.tokenId,
     });
 
@@ -100,9 +100,9 @@ export class AuthService {
       userAgent,
     });
 
-    const accessToken = signAccessToken({ sub: user.dataValues.id, email: user.dataValues.email });
+    const accessToken = signAccessToken({ id: user.dataValues.id, email: user.dataValues.email });
     const refreshToken = signRefreshToken({
-      sub: user.dataValues.id,
+      id: user.dataValues.id,
       tokenId: refreshTokenRecord.dataValues.tokenId,
     });
 
@@ -120,7 +120,7 @@ export class AuthService {
 
   public async logout(token: string) {
     const payload = verifyRefreshToken(token);
-    await this.revokeRefreshToken(payload.sub, payload.tokenId);
+    await this.revokeRefreshToken(payload.id, payload.tokenId);
   }
 
   public async refreshTokens(
@@ -134,7 +134,7 @@ export class AuthService {
     const payload = verifyRefreshToken(token);
 
     const tokenRecord = await RefreshToken.findOne({
-      where: { tokenId: payload.tokenId, userId: payload.sub },
+      where: { tokenId: payload.tokenId, userId: payload.id },
     });
 
     if (!tokenRecord) {
@@ -146,10 +146,10 @@ export class AuthService {
       throw new BadRequestError('Refresh token has expired');
     }
 
-    const credential = await UserCredentials.findByPk(payload.sub);
+    const credential = await UserCredentials.findByPk(payload.id);
 
     if (!credential) {
-      logger.warn({ userId: payload.sub }, 'User missing for refresh token');
+      logger.warn({ userId: payload.id }, 'User missing for refresh token');
       throw new BadRequestError('Invalid refresh token');
     }
 
@@ -161,8 +161,8 @@ export class AuthService {
     });
 
     return {
-      accessToken: signAccessToken({ sub: credential.id, email: credential.email }),
-      refreshToken: signRefreshToken({ sub: credential.id, tokenId: newTokenRecord.tokenId }),
+      accessToken: signAccessToken({ id: credential.id, email: credential.email }),
+      refreshToken: signRefreshToken({ id: credential.id, tokenId: newTokenRecord.tokenId }),
     };
   }
 

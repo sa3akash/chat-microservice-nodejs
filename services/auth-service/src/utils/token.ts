@@ -21,12 +21,12 @@ export const verifyPassword = async (password: string, hash: string): Promise<bo
 };
 
 export interface AccessTokenPayload {
-  sub: string; // userId
+  id: string; // userId
   email: string;
 }
 
 export interface RefreshTokenPayload {
-  sub: string; // userId
+  id: string; // userId
   tokenId: string;
 }
 

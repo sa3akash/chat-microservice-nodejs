@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 export interface MessageType extends mongoose.Document {
   conversationId: mongoose.Schema.Types.ObjectId | string;
-  senderId: mongoose.Schema.Types.ObjectId | string;
+  senderId: string;
   body: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -16,7 +16,7 @@ const messageSchema = new mongoose.Schema<MessageType>(
       ref: 'Conversation',
     },
     senderId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       required: true,
       ref: 'User',
     },

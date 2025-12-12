@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { messageModel, MessageType } from '@/models/message.model';
 import { conversationService } from './conversation.services';
-import { MessageListOptions, ServerError } from '@chat/common';
+import { BadRequestError, ServerError } from '@chat/common';
+import { Types } from 'mongoose';
 
 class MessageService {
   async createMessage(
@@ -24,15 +26,34 @@ class MessageService {
   async listMessages(
     conversationId: string,
     requesterId: string,
-    options: MessageListOptions = {},
-  ): Promise<MessageType[]> {
+    options: { limit: number; after?: string },
+  ) {
+    const { limit, after } = options;
+
     const conversation = await conversationService.getConversationById(conversationId);
 
     if (!conversation.participantIds.includes(requesterId)) {
       throw new ServerError('Requester is not part of this conversation', 403);
     }
 
-    return messageModel.find({ conversationId }, options);
+    const query: any = { conversationId };
+
+    if (after) {
+      if (!Types.ObjectId.isValid(after)) {
+        throw new BadRequestError('Invalid cursor id');
+      }
+      query._id = { $lt: new Types.ObjectId(after) };
+    }
+
+    const messages = await messageModel.find(query).sort({ _id: -1 }).limit(limit);
+
+    const nextCursor =
+      messages.length === limit ? messages[messages.length - 1]._id.toString() : null;
+
+    return {
+      data: messages,
+      nextCursor,
+    };
   }
 }
 

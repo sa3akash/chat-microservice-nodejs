@@ -22,4 +22,4 @@ const conversationSchema = new mongoose.Schema<Conversation>(
   },
 );
 
-export const conversationModel = mongoose.model<Conversation>('Conversation', conversationSchema);
+export const conversationModel = mongoose.model('Conversation', conversationSchema);

@@ -30,7 +30,7 @@ export interface CreateMessageInput {
 
 export interface MessageListOptions {
   limit?: number;
-  after?: Date;
+  after?: string;
 }
 
 export interface AddReactionInput {

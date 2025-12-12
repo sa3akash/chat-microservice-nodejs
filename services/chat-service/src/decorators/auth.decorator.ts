@@ -1,24 +1,5 @@
-import { env } from '@/config';
-import { type AuthenticatedUser, UnauthorizedError } from '@chat/common';
+import { NotFoundError, USER_ID_HEADER } from '@chat/common';
 import type { Request } from 'express';
-
-import jwt from 'jsonwebtoken';
-
-export const verifyToken = (value: string | undefined): AuthenticatedUser => {
-  try {
-    if (!value) {
-      throw new UnauthorizedError('token required.');
-    }
-    const [scheme, token] = value.split(' ');
-    if (scheme.toLowerCase() !== 'bearer' || !token) {
-      throw new UnauthorizedError('invalid token.');
-    }
-
-    return jwt.verify(token, env.JWT_SECRET) as AuthenticatedUser;
-  } catch {
-    throw new UnauthorizedError('Unauthorized');
-  }
-};
 
 export const auth = (): MethodDecorator => {
   return (_target, _propertyKey, descriptor: PropertyDescriptor) => {
@@ -26,10 +7,13 @@ export const auth = (): MethodDecorator => {
     descriptor.value = function (...args: unknown[]) {
       const req: Request = args[0] as Request;
 
-      const value = req.headers.authorization;
-      const user = verifyToken(value);
+      const userId = req.headers[USER_ID_HEADER] as string;
 
-      req.user = user;
+      if (!userId) {
+        throw new NotFoundError('user id not found');
+      }
+
+      req.user = { id: userId };
       return originalMethod.apply(this, args);
     };
     return descriptor;

@@ -28,7 +28,7 @@ export const createApp = (): Application => {
       },
       credentials: true,
       methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-      // allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+      // allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-user-id'],
     }),
   );
 

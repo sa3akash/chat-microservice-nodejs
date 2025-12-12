@@ -5,7 +5,7 @@ import { type ConversationFilter, NotFoundError, type CreateConversationInput } 
 class ConversationService {
   public async createConversation(input: CreateConversationInput) {
     const conversation = await conversationModel.create(input);
-    await conversationCache.set(conversation);
+    await conversationCache.set(conversation.toObject());
     return conversation;
   }
 
@@ -20,7 +20,7 @@ class ConversationService {
       throw new NotFoundError('Conversation not found');
     }
 
-    await conversationCache.set(conversation);
+    await conversationCache.set(conversation.toObject());
     return conversation;
   }
 
